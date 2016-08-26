@@ -1,6 +1,6 @@
 //
 //  Platform.cpp
-//  SkyDefense
+//  Falling Ball
 //
 //  Created by Michael Kaufman on 8/17/16.
 //
@@ -8,33 +8,26 @@
 
 #include "Platform.h"
 #include "Gamelayer.h"
-
+/*
 Platform::Platform(){
     
 }
 
 Platform::~Platform(){
     
-}
+}*/
 
 //_screenSize will be our argument in GameLayer
-void Platform::resetPlatform(Size screenSize, Layer* thisScene,
-                             int _platformPoolIndex, Vector<Sprite* > _platformPool){
+void Platform::resetPlatform(Size screenSize, Layer* ourScene, Sprite* ourPlatform){
     
     //return if too many rising objects
-    /*
-    if(_risingObjects.size() > 30) {
+    
+    if(risingObjects > 30) {
         return;
-    }*/
-    
-    auto platform = _platformPool.at(_platformPoolIndex);
-    _platformPoolIndex++;
-    
-    //We've reached the end of our platform pool, reset our index to the beginning
-    if(_platformPoolIndex == _platformPool.size()){
-        _platformPoolIndex = 0;
     }
     
+    auto platform = ourPlatform;
+
     //Set a random x position to be where the platform starts rising
     int platform_x = rand() % (int) (screenSize.width * 0.8f) + screenSize.width * 0.1f;
     int platformtarget_x = rand() % (int) (screenSize.width * 0.8f) + screenSize.width * 0.1f;
@@ -44,38 +37,20 @@ void Platform::resetPlatform(Size screenSize, Layer* thisScene,
     platform->setPosition(Vec2(platform_x, (screenSize.height * 0.1) +
                                platform->getBoundingBox().size.height * 0.5));
     
-    //Alright, now we create our action!
-    auto moveplatform = MoveTo::create(_platformSpeed, Vec2(platform_x,
+    //Alright, now we create our action! platformSpeed determines number of seconds to get
+    //to the top of the screen
+    auto moveplatform = MoveTo::create(platformSpeed, Vec2(platform_x,
                                                             screenSize.height * .99f));
-    //In example, this is in a sequence with our moveplatform
+    //This would be used to figure out when our platform is done moving
     //CallFunc::create(std::bind(&GameLayer::fallingObjectDone, this
     //meteor) ), nullptr);
     
-    thisScene->addChild(platform, 1);
+    ourScene->addChild(platform, 1);
     platform->setVisible(true);
     platform->runAction(moveplatform);
     
-    _risingObjects.pushBack(platform);
+    risingObjects++;
     
     
-    
-}
-
-Vector<Sprite* > Platform::createPlatformPool(){
-    
-    //Create platform pool
-    //Load the sprite sheet
-    auto spritecache = SpriteFrameCache::getInstance();
-    spritecache->addSpriteFramesWithFile("sprites.plist");
-    
-    Vector<Sprite* > _platformPool;
-    
-    for(int i = 0; i < 50; i++){
-        auto sprite = Sprite::createWithSpriteFrameName("platformv1.png");
-        sprite->setVisible(false);
-        _platformPool.pushBack(sprite);
-    }
-    
-    return (_platformPool);
     
 }

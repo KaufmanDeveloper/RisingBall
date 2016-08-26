@@ -28,7 +28,7 @@ bool GameLayer::init()
         return false;
     }
     
-    Size visibleSize = Director::getInstance()->getVisibleSize();
+    visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
     
     /////////////////////////////
@@ -81,23 +81,57 @@ bool GameLayer::init()
      *                            *
      */
     
+    //SpriteFrameCache::getInstance()->addSpriteFramesWithFile("sprites.plist");
+    
+    platformInterval = 3.5;
+    platformTimer = platformInterval * 0.99f;
+    
     //Have our platforms flow upwards on the game screen
-    platformFlow(visibleSize);
+    auto spritecache = SpriteFrameCache::getInstance();
+    spritecache->addSpriteFramesWithFile("sprites.plist");/*
+    auto sprite = Sprite::createWithSpriteFrameName("platformv1.png");
+    
+    sprite->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 +
+                             origin.y));
+    
+    this->addChild(sprite, 1);*/
+    
+    
+    
+    //This calls the update function between each frame of the game
+    this->scheduleUpdate();
+    
+    
     
     return true;
 }
 
-void GameLayer::platformFlow(Size screenSize){
-    int platformPoolIndex = 0;
+void GameLayer::update(float dt){
+    //We'll need to draw a platform if necessary in our update function
+    platformTimer += dt;
+    if(platformTimer > platformInterval){
+        platformTimer = 0;
+        //this->platformFlow(visibleSize);
+        //auto spritecache = SpriteFrameCache::getInstance();
+        //spritecache->addSpriteFramesWithFile("sprites.plist");
+        auto sprite = Sprite::createWithSpriteFrameName("platformv1.png");
+        Platform* platform = new Platform();
+        //This makes platforms rise from the bottom of the screen!
+        platform->resetPlatform(visibleSize, this, sprite);
+        //We this update function working at a proper interval, we just need platforms
+        CCLOG("TESTING");
+    }
     
-    Platform* platform = new Platform();
-    //Platforms contains 50 platforms
-    Vector<Sprite* > platforms = platform->createPlatformPool();
-    
-    //Need to figure out how to get many going at once...
-    platform->resetPlatform(screenSize, this, platformPoolIndex, platforms);
+    //This function will likely be where we call our collision detection function
     
 }
+
+
+
+
+/*
+
+ */
 
 void GameLayer::menuCloseCallback(Ref* pSender)
 {
