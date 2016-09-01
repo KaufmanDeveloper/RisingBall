@@ -1,5 +1,6 @@
 #include "GameLayer.h"
 #include "Platform.h"
+#include "Ball.h"
 
 USING_NS_CC;
 
@@ -88,7 +89,12 @@ bool GameLayer::init()
     
     //Have our platforms flow upwards on the game screen
     auto spritecache = SpriteFrameCache::getInstance();
-    spritecache->addSpriteFramesWithFile("sprites.plist");/*
+    spritecache->addSpriteFramesWithFile("sprites.plist");
+    
+    ball = Ball::create(visibleSize);
+    this->addChild(ball, 1);
+    
+    /*
     auto sprite = Sprite::createWithSpriteFrameName("platformv1.png");
     
     sprite->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 +
@@ -99,8 +105,8 @@ bool GameLayer::init()
     
     
     //This calls the update function between each frame of the game
-    this->scheduleUpdate();
-    
+    //this->scheduleUpdate();
+    scheduleUpdate();
     
     
     return true;
@@ -115,12 +121,21 @@ void GameLayer::update(float dt){
         //auto spritecache = SpriteFrameCache::getInstance();
         //spritecache->addSpriteFramesWithFile("sprites.plist");
         auto sprite = Sprite::createWithSpriteFrameName("platformv1.png");
+        sprite->setScale(1.5);
         Platform* platform = new Platform();
         //This makes platforms rise from the bottom of the screen!
         platform->resetPlatform(visibleSize, this, sprite);
         //We this update function working at a proper interval, we just need platforms
         CCLOG("TESTING");
     }
+    
+    ball->update(dt);
+    
+    //Point ballPoint = ball->getPosition();
+    //this->setPosition(ballPoint.x + 5, ballPoint.y);
+    
+    //auto ball = Ball::create(visibleSize);
+    //this->addChild(ball, 1);
     
     //This function will likely be where we call our collision detection function
     

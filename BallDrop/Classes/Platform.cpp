@@ -8,14 +8,14 @@
 
 #include "Platform.h"
 #include "Gamelayer.h"
-/*
+
 Platform::Platform(){
     
 }
 
 Platform::~Platform(){
     
-}*/
+}
 
 //_screenSize will be our argument in GameLayer
 void Platform::resetPlatform(Size screenSize, Layer* ourScene, Sprite* ourPlatform){
@@ -48,6 +48,10 @@ void Platform::resetPlatform(Size screenSize, Layer* ourScene, Sprite* ourPlatfo
     ourScene->addChild(platform, 1);
     platform->setVisible(true);
     platform->runAction(moveplatform);
+    
+    if(platform->getPositionY() >= screenSize.height * screenSize.height * .99f){
+        ourScene->removeChild(platform);
+    }
     
     risingObjects++;
     

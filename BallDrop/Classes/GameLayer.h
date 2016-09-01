@@ -11,6 +11,7 @@
 
 #include "cocos2d.h"
 #include "Platform.h"
+#include "Ball.h"
 
 USING_NS_CC;
 
@@ -26,6 +27,10 @@ private:
     //Info for our update function in which we'll draw a platform if necessary
     float platformInterval;
     float platformTimer;
+    
+    //Our ball object, yaya
+    Ball* ball;
+
     
 public:
     // there's no 'id' in cpp, so we recommend returning the class instance pointer

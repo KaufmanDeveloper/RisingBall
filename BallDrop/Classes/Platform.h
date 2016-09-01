@@ -32,10 +32,10 @@ public:
     
     //We'll probably add to the batch node in gamelayer.cpp?
     //SpriteBatchNode* _mygameBatchNode;
-    /*
+    
     Platform();
     virtual ~Platform();
-    */
+    
     void resetPlatform(Size screenSize, Layer* ourScene, Sprite* ourPlatform);
     
     
