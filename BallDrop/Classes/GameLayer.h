@@ -21,8 +21,6 @@ private:
     //Our screen size is determined in the init function
     Size visibleSize;
     
-    //We can call a sprite file multiple times with this baby
-    SpriteBatchNode* gameBatchNode;
     
     //Info for our update function in which we'll draw a platform if necessary
     float platformInterval;
@@ -30,6 +28,21 @@ private:
     
     //Our ball object, yaya
     Ball* ball;
+    //Our platform object (will need to make a pool of these)
+    Platform* platform1;
+    Platform* platform2;
+    Platform* platform3;
+    Platform* platform4;
+    Platform* platform5;
+    Platform* platform6;
+    Platform* platform7;
+    Platform* platform8;
+    
+    //Pool of platforms for screen drawing
+    Vector<Platform* > platformPool;
+    
+    //Iterator for platforms
+    int i = 0;
 
     
 public:

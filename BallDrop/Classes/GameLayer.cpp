@@ -50,39 +50,7 @@ bool GameLayer::init()
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu, 1);
     
-    /*
-    /////////////////////////////
-    // 3. add your codes below...
-    
-    // add a label shows "Hello World"
-    // create and initialize a label
-    
-    auto label = Label::createWithTTF("Hello World", "fonts/Marker Felt.ttf", 24);
-    
-    // position the label on the center of the screen
-    label->setPosition(Vec2(origin.x + visibleSize.width/2,
-                            origin.y + visibleSize.height - label->getContentSize().height));
-    
-    // add the label as a child to this layer
-    this->addChild(label, 1);
-    
-    // add "HelloWorld" splash screen"
-    auto sprite = Sprite::create("HelloWorld.png");
-    
-    // position the sprite on the center of the screen
-    sprite->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
-    
-    // add the sprite as a child to this layer
-    this->addChild(sprite, 0);*/
 
-    /*                            *
-     *                            *
-     * This is where my code goes *
-     *                            *
-     *                            *
-     */
-    
-    //SpriteFrameCache::getInstance()->addSpriteFramesWithFile("sprites.plist");
     
     platformInterval = 3.5;
     platformTimer = platformInterval * 0.99f;
@@ -91,16 +59,38 @@ bool GameLayer::init()
     auto spritecache = SpriteFrameCache::getInstance();
     spritecache->addSpriteFramesWithFile("sprites.plist");
     
-    ball = Ball::create(visibleSize);
+    ball = Ball::create();
     this->addChild(ball, 1);
     
-    /*
-    auto sprite = Sprite::createWithSpriteFrameName("platformv1.png");
+    //platform = Platform::create();
+    //this->addChild(platform, 1);
     
-    sprite->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 +
-                             origin.y));
+    platform1 = Platform::create();
+    this->addChild(platform1, 1);
+    platform2 = Platform::create();
+    this->addChild(platform2, 1);
+    platform3 = Platform::create();
+    this->addChild(platform3, 1);
+    platform4 = Platform::create();
+    this->addChild(platform4, 1);
+    platform5 = Platform::create();
+    this->addChild(platform5, 1);
+    platform6 = Platform::create();
+    this->addChild(platform6, 1);
+    platform7 = Platform::create();
+    this->addChild(platform7, 1);
+    platform8 = Platform::create();
+    this->addChild(platform8, 1);
     
-    this->addChild(sprite, 1);*/
+    //Initialize our platform objects for screen drawing purposes
+    platformPool.pushBack(platform1);
+    platformPool.pushBack(platform2);
+    platformPool.pushBack(platform3);
+    platformPool.pushBack(platform4);
+    platformPool.pushBack(platform5);
+    platformPool.pushBack(platform6);
+    platformPool.pushBack(platform7);
+    platformPool.pushBack(platform8);
     
     
     
@@ -113,31 +103,36 @@ bool GameLayer::init()
 }
 
 void GameLayer::update(float dt){
-    //We'll need to draw a platform if necessary in our update function
+
+    //Our update functions
+    //platform->update(dt);
+    ball->update(dt);
+    
+    //When to move our platforms
     platformTimer += dt;
     if(platformTimer > platformInterval){
         platformTimer = 0;
-        //this->platformFlow(visibleSize);
-        //auto spritecache = SpriteFrameCache::getInstance();
-        //spritecache->addSpriteFramesWithFile("sprites.plist");
-        auto sprite = Sprite::createWithSpriteFrameName("platformv1.png");
-        sprite->setScale(1.5);
-        Platform* platform = new Platform();
+        
+        platformPool.at(i)->setScale(1.5);
         //This makes platforms rise from the bottom of the screen!
-        platform->resetPlatform(visibleSize, this, sprite);
+        platformPool.at(i)->resetPlatform();
         //We this update function working at a proper interval, we just need platforms
         CCLOG("TESTING");
+        i++;
+    
     }
     
-    ball->update(dt);
+    for(int j = 0; j <= 7; j++){
+        platformPool.at(j)->checkCollision(ball);
+    }
     
-    //Point ballPoint = ball->getPosition();
-    //this->setPosition(ballPoint.x + 5, ballPoint.y);
     
-    //auto ball = Ball::create(visibleSize);
-    //this->addChild(ball, 1);
+    //If we've reached the end of our platform pool, begin again!
+    if(i == 7){
+        i = 0;
+    }
+
     
-    //This function will likely be where we call our collision detection function
     
 }
 

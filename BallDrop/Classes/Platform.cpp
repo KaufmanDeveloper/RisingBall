@@ -17,16 +17,27 @@ Platform::~Platform(){
     
 }
 
-//_screenSize will be our argument in GameLayer
-void Platform::resetPlatform(Size screenSize, Layer* ourScene, Sprite* ourPlatform){
+Platform* Platform::create(){
+    Platform* platform = new Platform();
     
-    //return if too many rising objects
-    
-    if(risingObjects > 30) {
-        return;
+    if(platform->initWithSpriteFrameName("platformv1.png")){
+        platform->autorelease();
+        //platform->resetPlatform();
+        platform->setVisible(false);
+        return platform;
     }
     
-    auto platform = ourPlatform;
+    CC_SAFE_DELETE(platform);
+    return NULL;
+}
+
+
+//_screenSize will be our argument in GameLayer
+void Platform::resetPlatform(){
+    
+    Size screenSize = Director::getInstance()->getWinSize();
+    
+    auto platform = this;
 
     //Set a random x position to be where the platform starts rising
     int platform_x = rand() % (int) (screenSize.width * 0.8f) + screenSize.width * 0.1f;
@@ -45,16 +56,18 @@ void Platform::resetPlatform(Size screenSize, Layer* ourScene, Sprite* ourPlatfo
     //CallFunc::create(std::bind(&GameLayer::fallingObjectDone, this
     //meteor) ), nullptr);
     
-    ourScene->addChild(platform, 1);
+    //ourScene->addChild(platform, 1);
     platform->setVisible(true);
-    platform->runAction(moveplatform);
-    
-    if(platform->getPositionY() >= screenSize.height * screenSize.height * .99f){
-        ourScene->removeChild(platform);
+    //We can just run the action, or we can try to clone the action
+    platform->runAction(moveplatform->clone());
+
+}
+
+//Check if the ball has landed on a platform and perform actions accordingly
+//We'll test first without checking an x-coordinate to get movement correct
+void Platform::checkCollision(Ball* ball){
+    if(this->top() == ball->bottom()){
+        //ball->setPositionY(ball->getPositionY() *1.1f);
+        CCLOG("Collision detected!");
     }
-    
-    risingObjects++;
-    
-    
-    
 }

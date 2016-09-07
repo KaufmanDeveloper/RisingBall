@@ -8,6 +8,7 @@
 
 #include "Ball.h"
 #include "cocos2d.h"
+#include "Platform.h"
 
 USING_NS_CC;
 
@@ -19,14 +20,14 @@ Ball::Ball(){
     
 }
 
-Ball* Ball::create(Size screenSize){
+Ball* Ball::create(){
     
     Ball* ball = new Ball();
     
     if(ball->initWithSpriteFrameName("ballworking.png")){
         ball->autorelease();
-        ball->initOptions(screenSize);
-        ball->addEvents(screenSize);
+        ball->initOptions();
+        ball->addEvents();
         
         return ball;
     }
@@ -35,12 +36,13 @@ Ball* Ball::create(Size screenSize){
     return NULL;
 }
 
-void Ball::initOptions(Size screenSize){
-    this->setPosition(Vec2(screenSize.width / 2, screenSize.height / 2));
+void Ball::initOptions(){
+    Size ourScreenSize = Director::getInstance()->getWinSize();
+    this->setPosition(Vec2(ourScreenSize.width / 2, ourScreenSize.height / 2));
     this->setScale(0.3);
 }
 
-void Ball::addEvents(Size screenSize){
+void Ball::addEvents(){
     auto listener = EventListenerTouchOneByOne::create();
     listener->setSwallowTouches(true);
     
@@ -99,4 +101,3 @@ void Ball::update(float dt){
     }
     
 }
-
