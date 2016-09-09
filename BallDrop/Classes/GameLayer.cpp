@@ -113,17 +113,28 @@ void GameLayer::update(float dt){
     if(platformTimer > platformInterval){
         platformTimer = 0;
         
-        platformPool.at(i)->setScale(1.5);
-        //This makes platforms rise from the bottom of the screen!
+        //This makes platforms initialize at the bottom of the screen
         platformPool.at(i)->resetPlatform();
-        //We this update function working at a proper interval, we just need platforms
-        CCLOG("TESTING");
+        
         i++;
     
     }
     
     for(int j = 0; j <= 7; j++){
-        platformPool.at(j)->checkCollision(ball);
+        if(platformPool.at(j)->getPositionY() <= visibleSize.height * 0.99f and
+           platformPool.at(j)->isVisible() == true){
+            platformPool.at(j)->setPositionY(platformPool.at(j)->getPositionY() + 3);
+        }
+    }
+    
+    for(int j = 0; j <= 7; j++){
+        if(platformPool.at(j)->checkCollision(ball)){
+            ball->setPositionY(ball->getPositionY() + 3);
+        }
+        
+        else{
+            ball->setPositionY(ball->getPositionY() - 0.5f);
+        }
     }
     
     

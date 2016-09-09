@@ -39,7 +39,7 @@ Ball* Ball::create(){
 void Ball::initOptions(){
     Size ourScreenSize = Director::getInstance()->getWinSize();
     this->setPosition(Vec2(ourScreenSize.width / 2, ourScreenSize.height / 2));
-    this->setScale(0.3);
+    //this->setScale(0.3);
 }
 
 void Ball::addEvents(){
@@ -93,11 +93,11 @@ void Ball::addEvents(){
 void Ball::update(float dt){
     //If we're touching to the right of the screen
     if(rightTouching){
-    this->setPositionX(this->getPositionX() + 3);
+    this->setPositionX(this->getPositionX() + 6);
     }
     
     if(leftTouching){
-        this->setPositionX(this->getPositionX() - 3);
+        this->setPositionX(this->getPositionX() - 6);
     }
     
 }

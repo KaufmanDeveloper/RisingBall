@@ -34,9 +34,13 @@ public:
     void update(float dt);
     
     //Reports the bottom position of the ball
-    inline int bottom() {
+    inline virtual float bottom() {
         //Subtract from the middle position the height value divided by two for the bottom
-        return this->getPositionY() - (this->getContentSize().height / 2);
+        //return this->getPositionY() - (this->getContentSize().height / 2);
+        
+        Point onScreenPosition = this->getParent()->convertToWorldSpace(this->getPosition());
+        float returnValue = onScreenPosition.y - (this->getContentSize().height / 2);
+        return (returnValue);
     }
     
     //Animation for ball when it's in a falling state, switches to true when done

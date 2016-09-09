@@ -23,6 +23,7 @@ Platform* Platform::create(){
     if(platform->initWithSpriteFrameName("platformv1.png")){
         platform->autorelease();
         //platform->resetPlatform();
+        //platform->setScale(1.5);
         platform->setVisible(false);
         return platform;
     }
@@ -59,15 +60,27 @@ void Platform::resetPlatform(){
     //ourScene->addChild(platform, 1);
     platform->setVisible(true);
     //We can just run the action, or we can try to clone the action
-    platform->runAction(moveplatform->clone());
+    //platform->runAction(moveplatform->clone());
+    
+    
+    platform->setPositionY(platform->getPositionY() + 3);
 
 }
 
 //Check if the ball has landed on a platform and perform actions accordingly
 //We'll test first without checking an x-coordinate to get movement correct
-void Platform::checkCollision(Ball* ball){
-    if(this->top() == ball->bottom()){
-        //ball->setPositionY(ball->getPositionY() *1.1f);
-        CCLOG("Collision detected!");
+bool Platform::checkCollision(Ball* ball){
+    //Check if we have a collision on the y-coordinate
+    if(this->top() - 1 <= ball->bottom() and this->top() + 1 >= ball->bottom()){
+        //Check if we have a collision on the x-coordinate
+        if(ball->getPositionX() >= this->platformleftside() and
+           ball->getPositionX() <= this->platformrightside()){
+        
+            return true;
+        }
+    }
+    
+    else{
+        return false;
     }
 }

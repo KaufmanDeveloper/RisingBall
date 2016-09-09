@@ -33,21 +33,36 @@ public:
     virtual ~Platform();
     
     //To return the top of our platform for collision detection algorithm
-    inline virtual int top() {
+    inline virtual float top() {
         //The y position, which is at the center of the sprite, added to the
         //height of the sprite divided by two in order to get the top positional value
-        return this->getPositionY() + (this->getContentSize().height / 2);
+        //return this->getPositionY() + (this->getContentSize().height / 2);
+        
+        Point onScreenPosition = this->getParent()->convertToWorldSpace(this->getPosition());
+        float returnValue = onScreenPosition.y + (this->getContentSize().height / 2);
+        //float returnValue = onScreenPosition.y;
+        return (returnValue);
+    }
+    
+    inline virtual float platformleftside(){
+        
+        Point onScreenPosition = this->getParent()->convertToWorldSpace(this->getPosition());
+        float returnValue = onScreenPosition.x - (this->getContentSize().width / 2);
+        return (returnValue);
     }
     
     inline virtual float platformrightside(){
-        return this->getPositionX();
+        
+        Point onScreenPosition = this->getParent()->convertToWorldSpace(this->getPosition());
+        float returnValue = onScreenPosition.x + (this->getContentSize().width / 2);
+        return (returnValue);
     }
     
     //Begin platform movement
     void resetPlatform();
     
     //Check collision with our ball
-    void checkCollision(Ball* ball);
+    bool checkCollision(Ball* ball);
 };
 
 #endif /* Platform_h */
