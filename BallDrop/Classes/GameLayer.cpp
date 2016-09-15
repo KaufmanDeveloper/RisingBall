@@ -1,5 +1,7 @@
 #include "GameLayer.h"
 #include "Platform.h"
+#include "Ball.h"
+#include "SimpleAudioEngine.h"
 
 USING_NS_CC;
 
@@ -28,8 +30,9 @@ bool GameLayer::init()
         return false;
     }
     
-    Size visibleSize = Director::getInstance()->getVisibleSize();
+    visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
+    
     
     /////////////////////////////
     // 2. add a menu item with "X" image, which is clicked to quit the program
@@ -49,55 +52,146 @@ bool GameLayer::init()
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu, 1);
     
-    /*
-    /////////////////////////////
-    // 3. add your codes below...
+    CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("song.mp3", true);
     
-    // add a label shows "Hello World"
-    // create and initialize a label
-    
-    auto label = Label::createWithTTF("Hello World", "fonts/Marker Felt.ttf", 24);
-    
-    // position the label on the center of the screen
-    label->setPosition(Vec2(origin.x + visibleSize.width/2,
-                            origin.y + visibleSize.height - label->getContentSize().height));
-    
-    // add the label as a child to this layer
-    this->addChild(label, 1);
-    
-    // add "HelloWorld" splash screen"
-    auto sprite = Sprite::create("HelloWorld.png");
-    
-    // position the sprite on the center of the screen
-    sprite->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
-    
-    // add the sprite as a child to this layer
-    this->addChild(sprite, 0);*/
-
-    /*                            *
-     *                            *
-     * This is where my code goes *
-     *                            *
-     *                            *
-     */
+    platformInterval = 3.5;
+    platformTimer = platformInterval * 0.99f;
     
     //Have our platforms flow upwards on the game screen
-    platformFlow(visibleSize);
+    auto spritecache = SpriteFrameCache::getInstance();
+    spritecache->addSpriteFramesWithFile("sprites.plist");
+    
+    ball = Ball::create();
+    this->addChild(ball, 1);
+    
+    platform1 = Platform::create();
+    this->addChild(platform1, 1);
+    platform2 = Platform::create();
+    this->addChild(platform2, 1);
+    platform3 = Platform::create();
+    this->addChild(platform3, 1);
+    platform4 = Platform::create();
+    this->addChild(platform4, 1);
+    platform5 = Platform::create();
+    this->addChild(platform5, 1);
+    platform6 = Platform::create();
+    this->addChild(platform6, 1);
+    platform7 = Platform::create();
+    this->addChild(platform7, 1);
+    platform8 = Platform::create();
+    this->addChild(platform8, 1);
+    
+    //Initialize our platform objects for screen drawing purposes
+    platformPool.pushBack(platform1);
+    platformPool.pushBack(platform2);
+    platformPool.pushBack(platform3);
+    platformPool.pushBack(platform4);
+    platformPool.pushBack(platform5);
+    platformPool.pushBack(platform6);
+    platformPool.pushBack(platform7);
+    platformPool.pushBack(platform8);
+    
+    
+    auto bg = Sprite::create("bg.png");
+    bg->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
+    this->addChild(bg, 0);
+    
+    
+    //This calls the update function between each frame of the game
+    //this->scheduleUpdate();
+    scheduleUpdate();
+    
     
     return true;
 }
 
-void GameLayer::platformFlow(Size screenSize){
-    int platformPoolIndex = 0;
+void GameLayer::update(float dt){
+
+    //Our update functions
+    //platform->update(dt);
+    ball->update(dt);
     
-    Platform* platform = new Platform();
-    //Platforms contains 50 platforms
-    Vector<Sprite* > platforms = platform->createPlatformPool();
+    //When to move our platforms
+    platformTimer += dt;
+    if(platformTimer > platformInterval){
+        platformTimer = 0;
+        
+        //This makes platforms initialize at the bottom of the screen
+        platformPool.at(i)->resetPlatform();
+        
+        i++;
+        scoreCount++;
     
-    //Need to figure out how to get many going at once...
-    platform->resetPlatform(screenSize, this, platformPoolIndex, platforms);
+    }
+    
+    for(int j = 0; j <= 7; j++){
+        if(platformPool.at(j)->getPositionY() <= visibleSize.height * 0.99f and
+           platformPool.at(j)->isVisible() == true){
+            for(int k = 0; k <= 2; k++){
+                
+                platformPool.at(j)->setPositionY(platformPool.at(j)->getPositionY() + 1);
+                
+                if(platformPool.at(j)->checkCollision(ball)){
+                    //Play sound when a collision initially occurs
+                    if(playSound == true){
+                    CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("hit.wav");
+                    }
+                    //We don't want it to play the sound again
+                    playSound = false;
+                    
+                    isFalling = false;
+                    ball->setPositionY(ball->getPositionY() + 1);
+                }
+                else{
+                    isFalling = true;
+                }
+            }
+        }
+    }
+    
+    if(isFalling == true){
+        playSound = true;
+        ball->setPositionY(ball->getPositionY() - 1);
+    }
+    
+   /*
+    for(int j = 0; j <= 7; j++){
+        if(platformPool.at(j)->checkCollision(ball)){
+            ball->setPositionY(ball->getPositionY() + 3);
+        }
+        
+        else{
+            ball->setPositionY(ball->getPositionY() - 0.5f);
+        }
+    }*/
+    
+    
+    //If we've reached the end of our platform pool, begin again!
+    if(i == 7){
+        i = 0;
+    }
+
+    if(ball->getPositionY() <= visibleSize.height * 0.1){
+        CCLOG("You lose!");
+        CCLOG("Your score is %d", scoreCount);
+        toGameOver(this);
+    }
+    
+    if(ball->getPositionY() >= visibleSize.height * .8){
+        CCLOG("You lose!");
+        CCLOG("Your score is %d", scoreCount);
+        toGameOver(this);
+    }
     
 }
+
+void GameLayer::toGameOver(cocos2d::Ref* psender){
+    auto gameoverscene = GameOver::createScene();
+    
+    Director::getInstance()->replaceScene(gameoverscene);
+}
+
+
 
 void GameLayer::menuCloseCallback(Ref* pSender)
 {
