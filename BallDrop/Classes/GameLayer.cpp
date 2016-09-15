@@ -1,6 +1,7 @@
 #include "GameLayer.h"
 #include "Platform.h"
 #include "Ball.h"
+#include "SimpleAudioEngine.h"
 
 USING_NS_CC;
 
@@ -32,6 +33,7 @@ bool GameLayer::init()
     visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
     
+    
     /////////////////////////////
     // 2. add a menu item with "X" image, which is clicked to quit the program
     //    you may modify it.
@@ -50,7 +52,7 @@ bool GameLayer::init()
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu, 1);
     
-
+    CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("song.mp3", true);
     
     platformInterval = 3.5;
     platformTimer = platformInterval * 0.99f;
@@ -61,9 +63,6 @@ bool GameLayer::init()
     
     ball = Ball::create();
     this->addChild(ball, 1);
-    
-    //platform = Platform::create();
-    //this->addChild(platform, 1);
     
     platform1 = Platform::create();
     this->addChild(platform1, 1);
@@ -93,6 +92,10 @@ bool GameLayer::init()
     platformPool.pushBack(platform8);
     
     
+    auto bg = Sprite::create("bg.png");
+    bg->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
+    this->addChild(bg, 0);
+    
     
     //This calls the update function between each frame of the game
     //this->scheduleUpdate();
@@ -117,16 +120,41 @@ void GameLayer::update(float dt){
         platformPool.at(i)->resetPlatform();
         
         i++;
+        scoreCount++;
     
     }
     
     for(int j = 0; j <= 7; j++){
         if(platformPool.at(j)->getPositionY() <= visibleSize.height * 0.99f and
            platformPool.at(j)->isVisible() == true){
-            platformPool.at(j)->setPositionY(platformPool.at(j)->getPositionY() + 3);
+            for(int k = 0; k <= 2; k++){
+                
+                platformPool.at(j)->setPositionY(platformPool.at(j)->getPositionY() + 1);
+                
+                if(platformPool.at(j)->checkCollision(ball)){
+                    //Play sound when a collision initially occurs
+                    if(playSound == true){
+                    CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("hit.wav");
+                    }
+                    //We don't want it to play the sound again
+                    playSound = false;
+                    
+                    isFalling = false;
+                    ball->setPositionY(ball->getPositionY() + 1);
+                }
+                else{
+                    isFalling = true;
+                }
+            }
         }
     }
     
+    if(isFalling == true){
+        playSound = true;
+        ball->setPositionY(ball->getPositionY() - 1);
+    }
+    
+   /*
     for(int j = 0; j <= 7; j++){
         if(platformPool.at(j)->checkCollision(ball)){
             ball->setPositionY(ball->getPositionY() + 3);
@@ -135,7 +163,7 @@ void GameLayer::update(float dt){
         else{
             ball->setPositionY(ball->getPositionY() - 0.5f);
         }
-    }
+    }*/
     
     
     //If we've reached the end of our platform pool, begin again!
@@ -143,16 +171,27 @@ void GameLayer::update(float dt){
         i = 0;
     }
 
+    if(ball->getPositionY() <= visibleSize.height * 0.1){
+        CCLOG("You lose!");
+        CCLOG("Your score is %d", scoreCount);
+        toGameOver(this);
+    }
     
+    if(ball->getPositionY() >= visibleSize.height * .8){
+        CCLOG("You lose!");
+        CCLOG("Your score is %d", scoreCount);
+        toGameOver(this);
+    }
     
 }
 
+void GameLayer::toGameOver(cocos2d::Ref* psender){
+    auto gameoverscene = GameOver::createScene();
+    
+    Director::getInstance()->replaceScene(gameoverscene);
+}
 
 
-
-/*
-
- */
 
 void GameLayer::menuCloseCallback(Ref* pSender)
 {

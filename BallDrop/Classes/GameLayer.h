@@ -12,6 +12,7 @@
 #include "cocos2d.h"
 #include "Platform.h"
 #include "Ball.h"
+#include "GameOver.h"
 
 USING_NS_CC;
 
@@ -21,6 +22,11 @@ private:
     //Our screen size is determined in the init function
     Size visibleSize;
     
+    //Perform an action for if our ball is not falling
+    bool isFalling = true;
+    
+    //Should I play sound effect or nah? Only want it to play for initial collision.
+    bool playSound = true;
     
     //Info for our update function in which we'll draw a platform if necessary
     float platformInterval;
@@ -43,6 +49,9 @@ private:
     
     //Iterator for platforms
     int i = 0;
+    
+    //Score count
+    int scoreCount = 0;
 
     
 public:
@@ -54,6 +63,9 @@ public:
     
     // a selector callback
     void menuCloseCallback(cocos2d::Ref* pSender);
+    
+    //To go to game over screen
+    void toGameOver(cocos2d::Ref* pSender);
     
     //We'll work with this later, but we need this to constantly be updating game info
     //dt stands for delta time, or time between frames

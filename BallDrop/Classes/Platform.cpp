@@ -75,7 +75,7 @@ bool Platform::checkCollision(Ball* ball){
         //Check if we have a collision on the x-coordinate
         if(ball->getPositionX() >= this->platformleftside() and
            ball->getPositionX() <= this->platformrightside()){
-        
+            
             return true;
         }
     }
