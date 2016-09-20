@@ -49,10 +49,13 @@ bool GameOver::init()
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu, 1);
     
-    auto label = Label::createWithSystemFont("Game Over", "Arial", 36);
+    auto label = Label::createWithSystemFont("Game Over!", "Arial", 36);
     label->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
     this->addChild(label, 1);
-  
+    
+    auto listener = EventListenerTouchOneByOne::create();
+    listener->setSwallowTouches(true);
+    
     
     return true;
 }

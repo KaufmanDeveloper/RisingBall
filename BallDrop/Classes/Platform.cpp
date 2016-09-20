@@ -46,13 +46,12 @@ void Platform::resetPlatform(){
     
     //If any actions are being run on this platform sprite, we want to stop them first
     platform->stopAllActions();
-    platform->setPosition(Vec2(platform_x, (screenSize.height * 0.1) +
-                               platform->getBoundingBox().size.height * 0.5));
+    platform->setPosition(Vec2(platform_x, (screenSize.width / 2) - 120));
     
     //Alright, now we create our action! platformSpeed determines number of seconds to get
     //to the top of the screen
-    auto moveplatform = MoveTo::create(platformSpeed, Vec2(platform_x,
-                                                            screenSize.height * .99f));
+    //auto moveplatform = MoveTo::create(platformSpeed, Vec2(platform_x,
+                                                            //screenSize.height * .99f));
     //This would be used to figure out when our platform is done moving
     //CallFunc::create(std::bind(&GameLayer::fallingObjectDone, this
     //meteor) ), nullptr);
@@ -63,7 +62,7 @@ void Platform::resetPlatform(){
     //platform->runAction(moveplatform->clone());
     
     
-    platform->setPositionY(platform->getPositionY() + 3);
+   // platform->setPositionY(platform->getPositionY() + 3);
 
 }
 
