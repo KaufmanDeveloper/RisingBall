@@ -91,12 +91,14 @@ void Ball::addEvents(){
 }
 
 void Ball::update(float dt){
+    Size ourScreenSize = Director::getInstance()->getWinSize();
+    
     //If we're touching to the right of the screen
-    if(rightTouching){
+    if(rightTouching and this->getPositionX() <= ourScreenSize.width * .9){
     this->setPositionX(this->getPositionX() + 6);
     }
     
-    if(leftTouching){
+    if(leftTouching and this->getPositionX() >= ourScreenSize.width * .1){
         this->setPositionX(this->getPositionX() - 6);
     }
     

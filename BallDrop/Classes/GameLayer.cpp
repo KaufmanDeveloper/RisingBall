@@ -52,6 +52,7 @@ bool GameLayer::init()
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu, 1);
     
+    //Add our background music
     CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("song.mp3", true);
     
     platformInterval = 3.5;
@@ -96,6 +97,17 @@ bool GameLayer::init()
     bg->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
     this->addChild(bg, 0);
     
+    auto spikes = Sprite::create("topspikes.png");
+    spikes->setPosition(Vec2(visibleSize.width / 2, visibleSize.height * .8));
+    this->addChild(spikes, 2);
+    
+    //Display the score
+    __String *tempScore = __String::createWithFormat("%d", scoreCount);
+    scoreLabel = Label::createWithTTF(tempScore->getCString(), "fonts/Marker Felt.ttf",
+                                           50);
+    scoreLabel->setPosition(visibleSize.width * .9, 50);
+    this->addChild(scoreLabel, 1);
+    
     
     //This calls the update function between each frame of the game
     //this->scheduleUpdate();
@@ -121,49 +133,40 @@ void GameLayer::update(float dt){
         
         i++;
         scoreCount++;
+        __String *tempScore = __String::createWithFormat("%d", scoreCount);
+        scoreLabel->setString(tempScore->getCString());
     
     }
     
     for(int j = 0; j <= 7; j++){
         if(platformPool.at(j)->getPositionY() <= visibleSize.height * 0.99f and
            platformPool.at(j)->isVisible() == true){
-            for(int k = 0; k <= 2; k++){
+            for(int k = 0; k <= 7; k++){
                 
                 platformPool.at(j)->setPositionY(platformPool.at(j)->getPositionY() + 1);
                 
                 if(platformPool.at(j)->checkCollision(ball)){
-                    //Play sound when a collision initially occurs
-                    if(playSound == true){
-                    CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("hit.wav");
-                    }
-                    //We don't want it to play the sound again
-                    playSound = false;
                     
-                    isFalling = false;
                     ball->setPositionY(ball->getPositionY() + 1);
-                }
-                else{
-                    isFalling = true;
+                    
+                    if(platformPool.at(j)->getPositionY() >= visibleSize.height * .92f){
+                        platformPool.at(j)->setVisible(false);
+                    }
                 }
             }
         }
     }
     
-    if(isFalling == true){
-        playSound = true;
-        ball->setPositionY(ball->getPositionY() - 1);
-    }
     
-   /*
+    
+    
+    
+   
     for(int j = 0; j <= 7; j++){
-        if(platformPool.at(j)->checkCollision(ball)){
-            ball->setPositionY(ball->getPositionY() + 3);
+        if(platformPool.at(j)->getPositionY() >= visibleSize.height * 0.98f){
+            platformPool.at(j)->setVisible(false);
         }
-        
-        else{
-            ball->setPositionY(ball->getPositionY() - 0.5f);
-        }
-    }*/
+    }
     
     
     //If we've reached the end of our platform pool, begin again!
@@ -171,13 +174,8 @@ void GameLayer::update(float dt){
         i = 0;
     }
 
-    if(ball->getPositionY() <= visibleSize.height * 0.1){
-        CCLOG("You lose!");
-        CCLOG("Your score is %d", scoreCount);
-        toGameOver(this);
-    }
     
-    if(ball->getPositionY() >= visibleSize.height * .8){
+    if(ball->getPositionY() >= visibleSize.height * .86){
         CCLOG("You lose!");
         CCLOG("Your score is %d", scoreCount);
         toGameOver(this);

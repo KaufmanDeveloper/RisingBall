@@ -52,6 +52,8 @@ private:
     
     //Score count
     int scoreCount = 0;
+    //Display score
+    Label* scoreLabel;
 
     
 public:

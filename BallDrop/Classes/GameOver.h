@@ -20,6 +20,9 @@ private:
     //Our screen size is determined in the init function
     Size visibleSize;
     
+    //Our score
+    int score;
+    
     
 public:
     // there's no 'id' in cpp, so we recommend returning the class instance pointer
@@ -31,7 +34,7 @@ public:
     // a selector callback
     void menuCloseCallback(cocos2d::Ref* pSender);
     
-    
+    void toGameLayer(cocos2d::Ref* pSender);
     
     // implement the "static create()" method manually
     CREATE_FUNC(GameOver);
