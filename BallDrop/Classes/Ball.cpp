@@ -95,11 +95,11 @@ void Ball::update(float dt){
     
     //If we're touching to the right of the screen
     if(rightTouching and this->getPositionX() <= ourScreenSize.width * .9){
-    this->setPositionX(this->getPositionX() + 6);
+    this->setPositionX(this->getPositionX() + 9);
     }
     
     if(leftTouching and this->getPositionX() >= ourScreenSize.width * .1){
-        this->setPositionX(this->getPositionX() - 6);
+        this->setPositionX(this->getPositionX() - 9);
     }
     
 }
