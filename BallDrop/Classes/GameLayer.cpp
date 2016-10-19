@@ -55,7 +55,7 @@ bool GameLayer::init()
     //Add our background music
     CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("song.mp3", true);
     
-    platformInterval = 3.5;
+    platformInterval = 2.5;
     platformTimer = platformInterval * 0.99f;
     
     //Have our platforms flow upwards on the game screen
